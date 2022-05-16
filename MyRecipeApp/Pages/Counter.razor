@@ -1,0 +1,37 @@
+﻿@page "/currencyfx"
+@using MyRecipeApp.Data
+
+<PageTitle>Currency Converter</PageTitle>
+<label>
+    How much do you want to change? £<input @bind="Input" /> 
+</label>
+<br/>
+<br/>
+<button class="btn btn-primary" @onclick="async () => await PoundsToDollars()" >Convert £ to $</button>
+<br/>
+<br/>
+@if (Output != null)
+{
+    <label>Results: $@Output </label>    
+}
+
+@code {
+    private double? Input { get; set; }
+    private double? Output { get; set; }
+    
+    private async Task PoundsToDollars()
+    {
+        if (Input is null)
+            return;
+        try
+        {
+            Output = await FXService.GetSterlingToDollarAsync(Input.Value);
+        }
+        catch (ApplicationException e)
+        {
+            Console.WriteLine(e.Message);
+            @* <label> something went wrong </label> *@
+        }
+    }
+
+}
